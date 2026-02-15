@@ -4,6 +4,7 @@ import x11.Xlib;
 import x11.Xutil;
 import x11.X;
 import std.stdio;
+import std.string;
 
 struct Point
 {
@@ -70,15 +71,16 @@ class XCore
 {
 	private
 	{
-		Display        *dp;
-		Window         root;
-		XColor         color;
-		Screen         *screen;
-		int            i_screen;
-		Colormap       map;
-		XEvent         ev;
-		XImage         *img = null;
-		PointerQuery   pq;
+		Display		*dp;
+		Window		root;
+		XColor		color;
+		Screen		*screen;
+		int		i_screen;
+		Colormap	map;
+		XEvent		ev;
+		XImage		*img = null;
+		PointerQuery	pq;
+		bool		running = true;
 	}
 	public
 	{
@@ -116,12 +118,26 @@ class XCore
 				None
 			);
 		}
+		void
+		register_key ()
+		{
+			XGrabKey
+			(
+				this.dp,
+				XKeysymToKeycode(this.dp, XStringToKeysym(cast(char*)"q".toStringz())),
+				AnyModifier,
+				this.root,
+				True,
+				GrabModeAsync,
+				GrabModeAsync
+			);
+		}
 
 		void
 		main_loop ()
 		{
 			XNextEvent (this.dp, &this.ev);
-
+			
 			if (this.ev.type == ButtonPress && this.ev.xbutton.button == Button1)
 			{
 				this.pq.query();
