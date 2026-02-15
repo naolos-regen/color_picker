@@ -4,7 +4,7 @@
 
 **Arch Linux**
 ```bash
-># pacman -S gcc-d dmd
+># pacman -S gcc-d dtools
 ```
 
 ## Run 
