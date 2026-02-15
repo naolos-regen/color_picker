@@ -11,16 +11,29 @@ import core.stdc.inttypes;
 import core.stdc.config;
 import core.stdc.stdio;
 
-
 class XMainImageLoop
 {
-	public:
+	private
+	{
+		ulong    	pixel;
+		XImage  	*img;
+		Window  	r;
+		Window  	child;
+		int 		root_x;
+		int     	root_y;
+		int     	window_x;
+		int     	window_y;
+		uint    	mask_return;
+	}
+
+	public
+	{
 		this()
 		{
-		
+
 		}
 
-		XImage *	
+		XImage *
 		set_img(XPointerFollow info)
 		{
 			if (info.is_valid_window(this.r))
@@ -37,35 +50,24 @@ class XMainImageLoop
 			}
 		}
 
-		void 
+		void
 		main_loop(XPointerFollow info)
 		{
 			XQueryPointer(info.dp, info.root, &this.r, &this.child,
-				      &this.root_x, &this.root_y, &this.window_x, &this.window_y,
-				      &this.mask_return);
-
+			&this.root_x, &this.root_y, &this.window_x, &this.window_y,
+			&this.mask_return);
 			this.img = set_img(info);
-			
+
 
 			if (img)
 			{
-				immutable long pixel = XGetPixel(img, 0, 0);
+				this.pixel = XGetPixel(img, 0, 0);
 				info.set_color(pixel);
 				XColor color = info.get_color();
 				printf("RGB: %d, %d, %d\n", color.red >> 8, color.green >> 8, color.blue >> 8);
 				XDestroyImage(img);
 			}
 		}
-
-	private:
-		long		pixel;
-		XImage		*img;
-		Window		r;
-		Window		child;
-		int		root_x;
-		int		root_y;
-		int		window_x;
-		int		window_y;
-		uint		mask_return;
+	}
 }
 

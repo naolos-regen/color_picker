@@ -13,19 +13,24 @@ import core.stdc.inttypes;
 import core.stdc.config;
 import core.stdc.stdio;
 
-
 class XCore
 {
-	public:
-		Display *dp;
-		Window  root;
-		Screen  *s_screen;
-		int	i_screen;
+	private
+	{
+		XColor      color;
+		Colormap    colormap;
+	}
+	public
+	{
+		Display     *dp;
+		Window      root;
+		Screen      *s_screen;
+		int         i_screen;
 
 		this()
 		{
 			this.dp = XOpenDisplay(null);
-			this.root = DefaultRootWindow(this.dp);	
+			this.root = DefaultRootWindow(this.dp);
 			this.s_screen = DefaultScreenOfDisplay(this.dp);
 			this.i_screen = DefaultScreen(this.dp);
 			this.colormap = DefaultColormap(this.dp, this.i_screen);
@@ -36,7 +41,7 @@ class XCore
 			XCloseDisplay(dp);
 		}
 
-		void 
+		void
 		set_color(long pixel)
 		{
 			this.color.pixel = pixel;
@@ -55,10 +60,6 @@ class XCore
 			XWindowAttributes attrs;
 			return (XGetWindowAttributes(this.dp, window, &attrs) != 0);
 		}
-
-	private:
-		XColor  color;
-		Colormap colormap;
-
+	}
 }
 

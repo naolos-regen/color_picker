@@ -6,19 +6,25 @@ import x11.Xlib;
 import x11.Xutil;
 
 class XCoreLoop
-{	
-	public:
-	
-		this() 
+{
+	private
+	{
+		XPointerFollow infors;
+		XEvent ev;
+		XGenericEventCookie *cookie;
+	}
+	public
+	{
+		this()
 		{
 			infors = new XPointerFollow();
 		}
 
-		void 
+		void
 		main(void delegate (XPointerFollow info) f)
 		{
 			this.cookie = &ev.xcookie;
-			
+
 			XNextEvent(this.infors.dp, &this.ev);
 
 			if (this.infors.isXinput(this.cookie))
@@ -28,13 +34,9 @@ class XCoreLoop
 					f(this.infors);
 				}
 			}
-			
+
 			XFreeEventData(this.infors.dp, cookie);
 		}
-
-	private:
-		XPointerFollow infors;
-		XEvent ev;
-		XGenericEventCookie *cookie;
+	}
 }
 
