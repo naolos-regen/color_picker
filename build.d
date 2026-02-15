@@ -13,7 +13,7 @@ cmd (scope const (char [])[] args)
 int
 main ()
 {
-	if (!cmd(["gdc", "app.d", "-finclude-imports", "-lX11", "-lXi"]))
+	if (!cmd(["gdc", "-g", "app.d", "-finclude-imports", "-lX11", "-lXi"]))
 	{
 		return (1);
 	}
