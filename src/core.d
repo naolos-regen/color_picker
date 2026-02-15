@@ -23,6 +23,8 @@ class ImageValidator
 	}
 }
 
+
+
 class PointerQuery
 {
 	public
