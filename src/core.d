@@ -5,6 +5,7 @@ import x11.Xutil;
 import x11.X;
 import std.stdio;
 import std.string;
+import object;
 
 struct Point
 {
@@ -36,7 +37,7 @@ class PointerQuery
 	}
 	public
 	{
-		this (Display * dp, Window root)
+		this (ref Display *dp, Window root)
 		{
 			this.r = 0;
 			this.child = 0;
@@ -81,6 +82,7 @@ class XCore
 		XImage		*img = null;
 		PointerQuery	pq;
 		bool		running = true;
+		KeyCode 	close_key;
 	}
 	public
 	{
@@ -93,10 +95,17 @@ class XCore
 			this.map  = DefaultColormap(this.dp, this.i_screen);
 			this.pq   = new PointerQuery(this.dp, this.root);
 			this.register_button();
+			this.close_key = XKeysymToKeycode(this.dp, XStringToKeysym(cast(char *)"q".toStringz()));
+			this.register_key();
 		}
 
 		~this ()
 		{
+			if (this.img !is null)
+			{
+				XDestroyImage(this.img);
+			}
+			destroy(this.pq);
 			XFreeColormap(this.dp, this.map);
 			XCloseDisplay(this.dp);
 		}
@@ -124,8 +133,8 @@ class XCore
 			XGrabKey
 			(
 				this.dp,
-				XKeysymToKeycode(this.dp, XStringToKeysym(cast(char*)"q".toStringz())),
-				AnyModifier,
+				close_key,
+				Mod1Mask,
 				this.root,
 				True,
 				GrabModeAsync,
@@ -165,8 +174,17 @@ class XCore
 					XDestroyImage(img);
 					img = null;
 				}
-
 			}
+			if (this.ev.type == KeyPress && this.ev.xkey.keycode == close_key)
+			{
+				writeln("quitting?");
+				this.running = false;
+			}
+		}
+
+		bool is_running()
+		{
+			return this.running;
 		}
 	}
 }
