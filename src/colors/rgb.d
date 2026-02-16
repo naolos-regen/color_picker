@@ -16,13 +16,13 @@ struct RGB
 
 	private this(ref uint val)
 	{
-		this._val_argb &= 0x00FFFFFF;
+		this._val_argb &= 0xFF000000;
 		this._val_argb = val;
 	}
 
 	private this(ref ubyte red, ref ubyte green, ref ubyte blue)
 	{
-		this._arr_argb[0] = 0x00;
+		this._arr_argb[0] = 0xFF;
 		this._arr_argb[1] = red;
 		this._arr_argb[2] = green;
 		this._arr_argb[3] = blue;
