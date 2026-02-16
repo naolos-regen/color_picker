@@ -54,10 +54,10 @@ struct HSV
 
 	static HSV convert (ref RGB rgb)
 	{
-		immutable float[] arr_rgb_val = new float[3];
-		arr_rgb_val[0] = rgb._arr_argb[1] / 255.0 * 100.0;
-		arr_rgb_val[1] = rgb._arr_argb[2] / 255.0 * 100.0;
-		arr_rgb_val[2] = rgb._arr_argb[3] / 255.0 * 100.0;
+		immutable ubyte[] arr_rgb_val = new float[3];
+		arr_rgb_val[0] = rgb._arr_argb[1] / ubyte.max * 100u;
+		arr_rgb_val[1] = rgb._arr_argb[2] / ubyte.max * 100u;
+		arr_rgb_val[2] = rgb._arr_argb[3] / ubyte.max * 100u;
 
 		float maxmin[2] = { arr_rgb_val[0] , arr_rgb_val[0] };
 		foreach (immutable float val; arr_rgb_val)
