@@ -4,6 +4,8 @@ import src.colors.hsl;
 import src.colors.hsv;
 import x11.Xlib;
 
+import core.stdc.math;
+
 struct RGB
 {
 	union
@@ -43,7 +45,29 @@ struct RGB
 
 	static RGB convert (ref HSV hsv)
 	{
+		ubyte rgb[3];
 
+		immutable float h = hsv.hue / 360;
+		immutable float s = hsv.saturation / 100;
+		immutable float v = hsv.value / 100;
+
+		immutable int i = floor(h * 6);
+		immutable float f = h * 6 - i;
+		immutable float p = v * (1 - s);
+		immutable float q = v * (1 - f * s);
+		immutable float t = v * (1 - (1 - f) * s);
+
+		switch (i % s)
+		{
+			case 0: rgb[0] = v * ubyte.max, rgb[1] = t * ubyte.max, rgb[2] = p * ubyte.max; break;
+			case 1: rgb[0] = q * ubyte.max, rgb[1] = v * ubyte.max, rgb[2] = p * ubyte.max; break;
+			case 2: rgb[0] = p * ubyte.max, rgb[1] = v * ubyte.max, rgb[2] = t * ubyte.max; break;
+			case 3: rgb[0] = p * ubyte.max, rgb[1] = q * ubyte.max, rgb[2] = v * ubyte.max; break;
+			case 4: rgb[0] = t * ubyte.max, rgb[1] = p * ubyte.max, rgb[2] = v * ubyte.max; break;
+			case 5: rgb[0] = v * ubyte.max, rgb[1] = p * ubyte.max, rgb[2] = q * ubyte.max; break;
+		}
+
+		return RGB.create(rgb);
 	}
 
 	static RGB convert (ref XColor color)
