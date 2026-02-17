@@ -14,13 +14,13 @@ struct RGB
 		ubyte[4] _arr_argb;
 	}
 
-	private this(ref uint val)
+	private this(uint val)
 	{
 		this._val_argb &= 0xFF000000;
 		this._val_argb = val;
 	}
 
-	private this(ref ubyte red, ref ubyte green, ref ubyte blue)
+	private this(ubyte red, ubyte green, ubyte blue)
 	{
 		this._arr_argb[0] = 0xFF;
 		this._arr_argb[1] = red;
@@ -28,55 +28,50 @@ struct RGB
 		this._arr_argb[3] = blue;
 	}
 
-	static RGB create (ref uint val)
+	static RGB create (uint val)
 	{
 		return RGB(val);
 	}
 
-	static RGB * create (ref uint val)
+	static RGB create (ubyte red, ubyte green, ubyte blue)
 	{
-		return new RGB(val);
+		return RGB(red, green, blue);
 	}
-
+/*
 	static RGB convert (ref HSL hsl)
 	{
 
 	}
+*/
 
 	static RGB convert (ref HSV hsv)
 	{
-		ubyte rgb[3];
+		const float h = hsv.hue / 360.0;
+		const float s = hsv.saturation / 100.0;
+		const float v = hsv.value / 100.0;
 
-		immutable float h = hsv.hue / 360;
-		immutable float s = hsv.saturation / 100;
-		immutable float v = hsv.value / 100;
+		float r, g, b;
+		int i = cast(int)(h * 6);
+		const float f = h * 6 - i;
+		const float p = v * (1 - s);
+		const float q = v * (1 - f * s);
+		const float t = v * (1 - (1 - f) * s);
 
-		immutable int i = floor(h * 6);
-		immutable float f = h * 6 - i;
-		immutable float p = v * (1 - s);
-		immutable float q = v * (1 - f * s);
-		immutable float t = v * (1 - (1 - f) * s);
+		i %= 6;
 
-		switch (i % s)
-		{
-			case 0: rgb[0] = v * ubyte.max, rgb[1] = t * ubyte.max, rgb[2] = p * ubyte.max; break;
-			case 1: rgb[0] = q * ubyte.max, rgb[1] = v * ubyte.max, rgb[2] = p * ubyte.max; break;
-			case 2: rgb[0] = p * ubyte.max, rgb[1] = v * ubyte.max, rgb[2] = t * ubyte.max; break;
-			case 3: rgb[0] = p * ubyte.max, rgb[1] = q * ubyte.max, rgb[2] = v * ubyte.max; break;
-			case 4: rgb[0] = t * ubyte.max, rgb[1] = p * ubyte.max, rgb[2] = v * ubyte.max; break;
-			case 5: rgb[0] = v * ubyte.max, rgb[1] = p * ubyte.max, rgb[2] = q * ubyte.max; break;
-		}
+		if (i == 0) { r = v; g = t; b = p; }
+		else if (i == 1) { r = q; g = v; b = p; }
+		else if (i == 2) { r = p; g = v; b = t; }
+		else if (i == 3) { r = p; g = q; b = v; }
+		else if (i == 4) { r = t; g = p; b = v; }
+		else { r = v; g = p; b = q; }
 
-		return RGB.create(rgb);
+		return RGB(cast(ubyte)(r * ubyte.max), cast(ubyte)(g * ubyte.max), cast(ubyte)(b * ubyte.max));
 	}
-
+/*
 	static RGB convert (ref XColor color)
 	{
 		return RGB (color.red, color.green, color.blue);
 	}
-
-	static RGB * convert (ref XColor color)
-	{
-		return new RGB (color.red, color.green, color.blue);
-	}
+*/
 }

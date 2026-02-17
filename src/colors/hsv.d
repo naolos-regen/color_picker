@@ -3,7 +3,9 @@ module src.colors.hsv;
 import src.colors.hsl;
 import src.colors.rgb;
 import x11.Xlib;
+import std.algorithm;
 
+import std.stdio;
 
 struct HSV
 {
@@ -11,14 +13,14 @@ struct HSV
 	ubyte saturation; // 0-100
 	ubyte value; // 0-100
 
-	private this (ref uint hue, ref ubyte saturation, ref ubyte value)
+	private this (uint hue, ubyte saturation, ubyte value)
 	{
 		this.hue = hue;
 		this.saturation = saturation;
 		this.value = value;
 	}
 
-	static HSV create (ref uint hue, ref ubyte saturation, ref ubyte value)
+	static HSV create (uint hue, ubyte saturation, ubyte value)
 	{
 		if (hue > 360)
 		{
@@ -35,67 +37,47 @@ struct HSV
 		return HSV (hue, saturation, value);
 	}
 
-	static HSV * create (ref uint hue, ref ubyte saturation, ref ubyte value)
-	{
-		if (hue > 360)
-		{
-			throw new Exception ("hue is too big");
-		}
-		if (saturation > 100)
-		{
-			throw new Exception ("satutation is too big");
-		}
-		if (value > 100)
-		{
-			throw new Exception ("value is too big");
-		}
-		return new HSV (hue, saturation, value);
-	}
-
 	static HSV convert (ref RGB rgb)
 	{
-		immutable ubyte[] arr_rgb_val = new float[3];
-		arr_rgb_val[0] = rgb._arr_argb[1] / ubyte.max * 100u;
-		arr_rgb_val[1] = rgb._arr_argb[2] / ubyte.max * 100u;
-		arr_rgb_val[2] = rgb._arr_argb[3] / ubyte.max * 100u;
+		const float r = rgb._arr_argb[1] / 255.0;
+		const float g = rgb._arr_argb[2] / 255.0;
+		const float b = rgb._arr_argb[3] / 255.0;
 
-		float maxmin[2] = { arr_rgb_val[0] , arr_rgb_val[0] };
-		foreach (immutable float val; arr_rgb_val)
+		const float max = max(r, max(g, b));
+		const float min = min(r, min(g, b));
+		float h, s; 
+		const float v = max;
+
+		const float d = max - min;
+		s = (max == 0 ? 0 : d / max);
+
+		if (max == min)
 		{
-			if (val > maxmin[0])
-				maxmin[0] = val;
-			if (val < maxmin[1])
-				maxmin[1] = val;
+			h = 0;
+		}
+		else
+		{
+			if (max == r)
+				h = (g - b) / d + (g < b ? 6 : 0);
+			else if (max == g)
+				h = (b - r) / d + 2;
+			else
+				h = (r - g) / d + 4;
+			h /= 6;
 		}
 
-		if (maxmin[0] == maxmin[1]) {
-			return HSV(0, 0, cast(uint)maxmin[1]);
-		}
-
-		immutable float delta = maxmin[0] - maxmin[1];
-		immutable float s = (delta / maxmin[0]) * 100;
-
-		uint h;
-		if (arr_rgb_val[0] == maxmin[0]) {
-			h = cast(uint)((arr_rgb_val[1] - arr_rgb_val[2]) / delta);
-		} else if (arr_rgb_val[1] == maxmin[0]) {
-			h = cast(uint)(2.0 + (arr_rgb_val[2] - arr_rgb_val[0]) / delta);
-		} else {
-			h = cast(uint)(4.0 + (arr_rgb_val[0] - arr_rgb_val[1]) / delta);
-		}
-
-		h = (h * 60) % 360;
-
-		return HSV(h, cast(uint)s, cast(uint)maxmin[0]);
+		return HSV.create(cast(uint)(h * 360), cast(ubyte)(s * 100), cast(ubyte)(v * 100));
 	}
+	/*
+		static HSV convert (ref HSL hsl)
+		{
 
-	static HSV convert (ref HSL hsl)
-	{
-
-	}
-
+		}
+	*/
+	/*
 	static HSV convert (ref XColor color)
 	{
 		return convert (RGB.convert(color));
 	}
+	 */
 }

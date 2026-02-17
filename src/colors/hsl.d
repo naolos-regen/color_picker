@@ -9,7 +9,7 @@ struct HSL
 	ubyte hue;
 	ubyte saturation;
 	ubyte lightness;
-
+/*
 	static HSL convert (ref RGB rgb)
 	{
 
@@ -24,4 +24,5 @@ struct HSL
 	{
 
 	}
+ */
 }
