@@ -7,8 +7,9 @@ import std.algorithm;
 
 import std.stdio;
 
-struct HSV
+struct HSVA
 {
+	// TODO: change to float[4];
 	uint  hue; // 0-360
 	ubyte saturation; // 0-100
 	ubyte value; // 0-100
@@ -20,7 +21,7 @@ struct HSV
 		this.value = value;
 	}
 
-	static HSV create (uint hue, ubyte saturation, ubyte value)
+	static HSVA create (uint hue, ubyte saturation, ubyte value)
 	{
 		if (hue > 360)
 		{
@@ -34,10 +35,10 @@ struct HSV
 		{
 			throw new Exception ("value is too big");
 		}
-		return HSV (hue, saturation, value);
+		return HSVA (hue, saturation, value);
 	}
 
-	static HSV convert (ref ARGB argb)
+	static HSVA convert (ref ARGB argb)
 	{
 		const float r = argb._arr_argb[1] / 255.0;
 		const float g = argb._arr_argb[2] / 255.0;
@@ -45,7 +46,7 @@ struct HSV
 
 		const float max = max(r, max(g, b));
 		const float min = min(r, min(g, b));
-		float h, s; 
+		float h, s;
 		const float v = max;
 
 		const float d = max - min;
@@ -66,7 +67,7 @@ struct HSV
 			h /= 6;
 		}
 
-		return HSV.create(cast(uint)(h * 360), cast(ubyte)(s * 100), cast(ubyte)(v * 100));
+		return HSVA.create(cast(uint)(h * 360), cast(ubyte)(s * 100), cast(ubyte)(v * 100));
 	}
 	/*
 		static HSV convert (ref HSL hsl)

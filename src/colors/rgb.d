@@ -63,7 +63,7 @@ struct ARGB
 	}
 
 
-	static ARGB convert (ref HSV hsv)
+	static ARGB convert (ref HSVA hsv)
 	{
 		const float h = hsv.hue / 360.0;
 		const float s = hsv.saturation / 100.0;
