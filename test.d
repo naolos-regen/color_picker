@@ -6,9 +6,9 @@ import std.stdio;
 
 void main()
 {
-	RGB a = RGB.create(255, 0, 0);
+	ARGB a = ARGB.create(255, 0, 0);
 	HSV b = HSV.convert(a);
-	RGB c = RGB.convert(b);
+	ARGB c = ARGB.convert(b);
 
 	writeln("r=", c._arr_argb[1], " g=", c._arr_argb[2], " b", c._arr_argb[3]);
 	writeln("HUE=", b.hue, " SATURATION=", b.saturation, " VALUE=", b.value);
