@@ -37,11 +37,11 @@ struct HSV
 		return HSV (hue, saturation, value);
 	}
 
-	static HSV convert (ref RGB rgb)
+	static HSV convert (ref ARGB argb)
 	{
-		const float r = rgb._arr_argb[1] / 255.0;
-		const float g = rgb._arr_argb[2] / 255.0;
-		const float b = rgb._arr_argb[3] / 255.0;
+		const float r = argb._arr_argb[1] / 255.0;
+		const float g = argb._arr_argb[2] / 255.0;
+		const float b = argb._arr_argb[3] / 255.0;
 
 		const float max = max(r, max(g, b));
 		const float min = min(r, min(g, b));

@@ -1,12 +1,13 @@
 module src.colors.rgb;
 
+import src.colors.common;
 import src.colors.hsl;
 import src.colors.hsv;
 import x11.Xlib;
 
 import core.stdc.math;
 
-struct RGB
+struct ARGB
 {
 	union
 	{
@@ -28,23 +29,41 @@ struct RGB
 		this._arr_argb[3] = blue;
 	}
 
-	static RGB create (uint val)
+	static ARGB create (uint val)
 	{
-		return RGB(val);
+		return ARGB(val);
 	}
 
-	static RGB create (ubyte red, ubyte green, ubyte blue)
+	static ARGB create (ubyte red, ubyte green, ubyte blue)
 	{
-		return RGB(red, green, blue);
+		return ARGB(red, green, blue);
 	}
-/*
-	static RGB convert (ref HSL hsl)
+
+	static ARGB convert (ref HSLA hsla)
 	{
+		ubyte r, g, b;
+		float p, q;
 
+		if (hsla._v[1] == 0)
+			r = g = b = cast(ubyte) (hsla._v[2] * 100);
+		else
+		{
+			p = hsla._v[2] < 0.50 ? hsla._v[2] * (1 + hsla._v[1]) : hsla._v[2] + hsla._v[1] - (hsla._v[1] * hsla._v[2]);
+			q = 2 * hsla._v[2] - p;
+
+			hue_to_rgb(&r, p, q, hsla._v[0] + 0.333333f);
+			hue_to_rgb(&g, p, q, hsla._v[0]);
+			hue_to_rgb(&b, p, q, hsla._v[0] - 0.333333f);
+		}
+		r = cast(ubyte) ((((cast(float) r) / 100) * 255) + 0.5);
+		g = cast(ubyte) ((((cast(float) g) / 100) * 255) + 0.5);
+		b = cast(ubyte) ((((cast(float) b) / 100) * 255) + 0.5);
+
+		return ARGB.create(r, g, b);
 	}
-*/
 
-	static RGB convert (ref HSV hsv)
+
+	static ARGB convert (ref HSV hsv)
 	{
 		const float h = hsv.hue / 360.0;
 		const float s = hsv.saturation / 100.0;
@@ -66,12 +85,12 @@ struct RGB
 		else if (i == 4) { r = t; g = p; b = v; }
 		else { r = v; g = p; b = q; }
 
-		return RGB(cast(ubyte)(r * ubyte.max), cast(ubyte)(g * ubyte.max), cast(ubyte)(b * ubyte.max));
+		return ARGB(cast(ubyte)(r * ubyte.max), cast(ubyte)(g * ubyte.max), cast(ubyte)(b * ubyte.max));
 	}
-/*
-	static RGB convert (ref XColor color)
+
+	static ARGB convert (ref XColor color)
 	{
-		return RGB (color.red, color.green, color.blue);
+		return ARGB (cast(ubyte)color.red, cast(ubyte)color.green, cast(ubyte)color.blue);
 	}
-*/
+
 }
