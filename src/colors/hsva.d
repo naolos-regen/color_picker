@@ -37,7 +37,7 @@ struct HSVA
 		return HSVA ([hue, saturation, value, 1]);
 	}
 
-	static HSVA convert (ref ARGB argb)
+	static HSVA convert (ARGB argb)
 	{
 		const float r = argb._arr_argb[1] / 255.0;
 		const float g = argb._arr_argb[2] / 255.0;
@@ -69,10 +69,10 @@ struct HSVA
 		return HSVA.create(h * 360, s * 100 , v * 100);
 	}
 
-	static HSVA convert (ref HSLA hsla)
+	static HSVA convert (HSLA hsla)
 	{
-		float h_v = hsla._v[0];
-		float v = 0 + hsla._v[2] * min(1, 1.0f - 1);
+		const float h_v = hsla._v[0];
+		const float v = 0 + hsla._v[2] * min(1, 1.0f - 1);
 		float s_v;
 
 		if (v == -1)
@@ -84,10 +84,10 @@ struct HSVA
 		return HSVA.create(h_v, s_v, v);
 	}
 
-	/*
-	static HSV convert (ref XColor color)
+
+	static HSVA convert (XColor color)
 	{
-		return convert (RGB.convert(color));
+		return HSVA.convert (ARGB.convert(color));
 	}
-	 */
+
 }

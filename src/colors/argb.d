@@ -29,6 +29,14 @@ struct ARGB
 		this._arr_argb[3] = blue;
 	}
 
+	private this(ubyte alpha, ubyte red, ubyte green, ubyte blue)
+	{
+		this._arr_argb[0] = alpha;
+		this._arr_argb[1] = red;
+		this._arr_argb[2] = green;
+		this._arr_argb[3] = blue;
+	}
+
 	static ARGB create (uint val)
 	{
 		return ARGB(val);
@@ -39,7 +47,12 @@ struct ARGB
 		return ARGB(red, green, blue);
 	}
 
-	static ARGB convert (ref HSLA hsla)
+	static ARGB create (ubyte alpha, ubyte red, ubyte green, ubyte blue)
+	{
+		return ARGB (alpha, red, green, blue);
+	}
+
+	static ARGB convert (HSLA hsla)
 	{
 		ubyte r, g, b;
 		float p, q;
@@ -59,15 +72,15 @@ struct ARGB
 		g = cast(ubyte) ((((cast(float) g) / 100) * 255) + 0.5);
 		b = cast(ubyte) ((((cast(float) b) / 100) * 255) + 0.5);
 
-		return ARGB.create(r, g, b);
+		return ARGB.create(cast(ubyte)(hsla._v[3] * 255.0f), r, g, b);
 	}
 
 
-	static ARGB convert (ref HSVA hsv)
+	static ARGB convert (HSVA hsva)
 	{
-		const float h = hsv._v[0] / 360.0;
-		const float s = hsv._v[1] / 100.0;
-		const float v = hsv._v[2] / 100.0;
+		const float h = hsva._v[0] / 360.0;
+		const float s = hsva._v[1] / 100.0;
+		const float v = hsva._v[2] / 100.0;
 
 		float r, g, b;
 		int i = cast(int)(h * 6);
@@ -88,7 +101,7 @@ struct ARGB
 		return ARGB(cast(ubyte)(r * ubyte.max), cast(ubyte)(g * ubyte.max), cast(ubyte)(b * ubyte.max));
 	}
 
-	static ARGB convert (ref XColor color)
+	static ARGB convert (XColor color)
 	{
 		return ARGB (cast(ubyte)color.red, cast(ubyte)color.green, cast(ubyte)color.blue);
 	}

@@ -20,10 +20,20 @@ struct HSLA
 		this._v[0] = hsl[0];
 		this._v[1] = hsl[1];
 		this._v[2] = hsl[2];
-		this._v[3] = 1;
+		this._v[3] = 1.0;
 	}
 
-	static HSLA convert (ref ARGB rgb)
+	static HSLA create(float[4] hsla)
+	{
+		return HSLA(hsla);
+	}
+
+	static HSLA create(float[3] hsl)
+	{
+		return HSLA(hsl);
+	}
+
+	static HSLA convert (ARGB rgb)
 	{
 		float r, g, b;
 		float min, max, d;
@@ -53,20 +63,19 @@ struct HSLA
 				H = 4 + (r - g) / d;
 			H = H / 6;
 		}
-
-		return HSLA([H, S * 100, L * 100]);
+		return HSLA([H, S * 100, L * 100, rgb._arr_argb[0] / 255.0f]);
 	}
-/*
-	static HSLA convert (ref HSVA hsva)
+
+	static HSLA convert (HSVA hsva)
 	{
-
+		return HSLA.convert(ARGB.convert(hsva));
 	}
 
- */
-/*
-	static HSL convert (ref XColor color)
+
+
+	static HSLA convert (XColor color)
 	{
-
+		return HSLA.convert(ARGB.convert(color));
 	}
-*/
+
 }
