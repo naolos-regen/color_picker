@@ -1,8 +1,8 @@
-module src.colors.rgb;
+module src.colors.argb;
 
 import src.colors.common;
-import src.colors.hsl;
-import src.colors.hsv;
+import src.colors.hsla;
+import src.colors.hsva;
 import x11.Xlib;
 
 import core.stdc.math;
@@ -65,9 +65,9 @@ struct ARGB
 
 	static ARGB convert (ref HSVA hsv)
 	{
-		const float h = hsv.hue / 360.0;
-		const float s = hsv.saturation / 100.0;
-		const float v = hsv.value / 100.0;
+		const float h = hsv._v[0] / 360.0;
+		const float s = hsv._v[1] / 100.0;
+		const float v = hsv._v[2] / 100.0;
 
 		float r, g, b;
 		int i = cast(int)(h * 6);

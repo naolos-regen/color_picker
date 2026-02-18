@@ -1,6 +1,6 @@
-import src.colors.hsl;
-import src.colors.hsv;
-import src.colors.rgb;
+import src.colors.hsla;
+import src.colors.hsva;
+import src.colors.argb;
 
 import std.stdio;
 
@@ -10,6 +10,6 @@ void main()
 	HSVA b = HSVA.convert(a);
 	ARGB c = ARGB.convert(b);
 
+	writeln("HUE=", b._v[0], " SATURATION=", b._v[1], " VALUE=", b._v[2]);
 	writeln("r=", c._arr_argb[1], " g=", c._arr_argb[2], " b", c._arr_argb[3]);
-	writeln("HUE=", b.hue, " SATURATION=", b.saturation, " VALUE=", b.value);
 }

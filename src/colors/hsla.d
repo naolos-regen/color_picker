@@ -1,10 +1,10 @@
-module src.colors.hsl;
+module src.colors.hsla;
 
-import src.colors.rgb;
-import src.colors.hsv;
+import src.colors.argb;
+import src.colors.hsva;
 import x11.Xlib;
 import src.colors.common;
-
+import std.algorithm;
 
 struct HSLA
 {
@@ -54,14 +54,16 @@ struct HSLA
 			H = H / 6;
 		}
 
-		return HSLA([H, S, L]);
+		return HSLA([H, S * 100, L * 100]);
 	}
 /*
-	static HSL convert (ref HSV hsv)
+	static HSLA convert (ref HSVA hsva)
 	{
 
 	}
 
+ */
+/*
 	static HSL convert (ref XColor color)
 	{
 
